@@ -1,2 +1,2 @@
-import "dotenv/congif";
-import "./server.js";
+import 'dotenv/congif';
+import './server.js';

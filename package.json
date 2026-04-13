@@ -1,0 +1,25 @@
+{
+	"name": "acquisitions",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "node --watch src/server.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/NaveenGumaste/acquisitions.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "module",
+	"bugs": {
+		"url": "https://github.com/NaveenGumaste/acquisitions/issues"
+	},
+	"homepage": "https://github.com/NaveenGumaste/acquisitions#readme",
+	"dependencies": {
+		"dotenv": "^17.4.1",
+		"express": "^5.2.1"
+	}
+}

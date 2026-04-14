@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import logger from '#config/logger.js';
 
 const JWT_SECRET =
   process.env.JWT_SECRET || 'your_secret_key_please_change_this_in_production';
@@ -11,7 +12,7 @@ export const jwttoken = {
       return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     } catch (e) {
       console.error('Failed to authenticate token:', e);
-      throw new Error('Failed to authenticate token');
+      throw new Error('Failed to authenticate token', { cause: e });
     }
   },
   verify: token => {
@@ -19,7 +20,7 @@ export const jwttoken = {
       return jwt.verify(token, JWT_SECRET);
     } catch (e) {
       logger.error('Failed to authenticate token:', e);
-      throw new Error('Failed to authenticate token');
+      throw new Error('Failed to authenticate token', { cause: e });
     }
   },
 };

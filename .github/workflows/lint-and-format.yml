@@ -1,0 +1,61 @@
+name: Lint and Format
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    branches:
+      - main
+      - staging
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        id: lint
+        continue-on-error: true
+        run: npm run lint
+
+      - name: Run Prettier check
+        id: format
+        continue-on-error: true
+        run: npm run format:check
+
+      - name: Annotate lint/format failures
+        if: always() && (steps.lint.outcome == 'failure' || steps.format.outcome == 'failure')
+        run: |
+          if [ "${{ steps.lint.outcome }}" = "failure" ]; then
+            echo "::error title=ESLint failed::Lint issues found. Run 'npm run lint:fix' to auto-fix many issues."
+          fi
+          if [ "${{ steps.format.outcome }}" = "failure" ]; then
+            echo "::error title=Prettier check failed::Formatting issues found. Run 'npm run format' to reformat files."
+          fi
+          echo "### Lint/Format Check Failed" >> "$GITHUB_STEP_SUMMARY"
+          echo "- ESLint: ${{ steps.lint.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Prettier: ${{ steps.format.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Suggested fixes:" >> "$GITHUB_STEP_SUMMARY"
+          echo "  - \`npm run lint:fix\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "  - \`npm run format\`" >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
+      - name: Add success summary
+        if: steps.lint.outcome == 'success' && steps.format.outcome == 'success'
+        run: |
+          echo "### Lint/Format Check Passed" >> "$GITHUB_STEP_SUMMARY"
+          echo "- ESLint: success" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Prettier: success" >> "$GITHUB_STEP_SUMMARY"

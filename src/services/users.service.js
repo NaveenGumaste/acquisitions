@@ -78,6 +78,7 @@ export const updateUser = async (id, updates) => {
     logger.error(`Error updating user with id ${id}:`, e);
     throw e;
   }
+  cookies.setToke;
 };
 
 export const deleteUser = async id => {
